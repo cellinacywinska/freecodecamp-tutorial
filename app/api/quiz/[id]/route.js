@@ -11,6 +11,22 @@
 import questions from '@/data/quiz.json'
 import { NextResponse } from 'next/server'
 
-export async function GET() {
-  return NextResponse.json({})
+// retrieving a specific question from a quiz
+export async function GET(req, { params }) {
+  try {
+    const question = questions.data.find(item => item.id === params.id)
+
+    if (!question) {
+      return new NextResponse('not found', { status: 404 })
+    }
+
+    // if question is found, extract correct answer and store remaining question details in rest variable
+    const { correct_answer, ...rest } = question
+
+    return NextResponse.json({
+      question: rest,
+    })
+  } catch (error) {
+    return new NextResponse('Internal Server Error', { status: 500 })
+  }
 }
